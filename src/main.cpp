@@ -12,8 +12,8 @@ int main() {
   unsigned turns, coins;
   std::cin >> turns >> coins;
 
-  unsigned n_attacker_types;
-  std::cin >> n_attacker_types;
+  unsigned n_attacker_types;    // player 2
+  std::cin >> n_attacker_types; // pipe1
   for (unsigned attacker_type_id = 1; attacker_type_id <= n_attacker_types;
        ++attacker_type_id) {
     unsigned hp, range, attack_power, speed, price;
@@ -23,8 +23,8 @@ int main() {
                        Attributes(hp, range, attack_power, speed, price)));
   }
 
-  unsigned n_defender_types;
-  std::cin >> n_defender_types;
+  unsigned n_defender_types;    // player 1
+  std::cin >> n_defender_types; // pipe2
   for (unsigned defender_type_id = 1; defender_type_id <= n_defender_types;
        ++defender_type_id) {
     unsigned hp, range, attack_power, speed, price;
@@ -55,7 +55,7 @@ int main() {
     auto spawn_positions = std::vector<std::pair<Position, AttackerType>>();
     while (n_attackers-- > 0) {
       unsigned type_id, x, y;
-      std::cin >> type_id >> x >> y;
+      std::cin >> type_id >> x >> y; // stdin
       spawn_positions.emplace_back(
           std::make_pair(Position(x, y), AttackerType(type_id)));
     }
@@ -73,16 +73,33 @@ int main() {
     }
 
     game = game.simulate(player_set_targets, spawn_positions);
+    // game.simulate()
+    /*
+    player 1
+      attack - move position
+                hp
+      defense - hp
 
-    auto active_attackers = game.get_attackers();
+      player 2:-
+      attack - move positon
+                hp
+      defense - hp
+      game 1:
+        player 1 A1 = 80 // 20
+      game 2:
+        player 1 D1 = 40 // 60
+*/
+
+    auto active_attackers = game.get_attackers(); // player 1
     std::cout << active_attackers.size() << "\n";
     std::ranges::for_each(active_attackers, [](const Attacker &attacker) {
       std::cout << attacker.get_id() << " " << attacker.get_position().get_x()
                 << " " << attacker.get_position().get_y() << " "
-                << (int)attacker.get_type() << " " << attacker.get_hp() << "\n";
+                << (int)attacker.get_type() << " " << attacker.get_hp()
+                << "\n"; // stdout
     });
 
-    auto active_defenders = game.get_defenders();
+    auto active_defenders = game.get_defenders(); // player 2
     std::cout << active_defenders.size() << "\n";
     std::ranges::for_each(active_defenders, [](const Defender &defender) {
       std::cout << defender.get_id() << " " << defender.get_position().get_x()
@@ -105,5 +122,5 @@ int main() {
   Logger::log_end();
 
   // TODO: Figure out a way to save and extract logs from driver
-  std::cerr << Logger::get_log();
+  std::cerr << Logger::get_log(); // stderr
 }

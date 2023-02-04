@@ -7,6 +7,7 @@ add_subdirectory(attacker)
 add_subdirectory(defender)
 add_subdirectory(game)
 add_subdirectory(logger)
+add_subdirectory(mines)
 
 add_executable(main main.cpp)
 target_link_libraries(main cc_simulator)
