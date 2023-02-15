@@ -28,7 +28,9 @@ public:
               attack_power,  price,    is_aerial},
         _type(type), _state(state) {}
 
-  void attack(Actor &opponent) const override;
+  [[nodiscard]] static Defender construct(DefenderType type, Position p);
+
+  void attack(Actor &opponent, char opponent_actor_type) const override;
 
   [[nodiscard]] virtual std::optional<size_t>
   get_nearest_attacker_index(const std::vector<Attacker *> &attackers) const;

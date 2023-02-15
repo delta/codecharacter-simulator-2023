@@ -32,9 +32,11 @@ public:
   [[nodiscard]] virtual std::optional<size_t>
   get_nearest_defender_index(const std::vector<Defender *> &defenders) const;
 
+  [[nodiscard]] std::optional<size_t> get_nearest_attacker_index_for_pvp(
+      const std::vector<Attacker> &attacker) const;
   void move(Position position);
 
-  void attack(Actor &opponent) const override;
+  void attack(Actor &opponent, char opponent_actor_type) const override;
 
   [[nodiscard]] bool is_destination_set() const;
 
