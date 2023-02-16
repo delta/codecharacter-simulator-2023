@@ -54,22 +54,6 @@ void Attacker::update_state() {
   return std::nullopt;
 }
 
-[[nodiscard]] std::optional<size_t>
-Attacker::get_nearest_attacker_index_for_pvp(
-    const std::vector<Attacker> &attackers) const {
-  if (attackers.empty()) {
-    return std::nullopt;
-  }
-
-  auto nearest_attacker = std::min_element(
-      attackers.begin(), attackers.end(),
-      [this](const Attacker &a, const Attacker &b) {
-        return this->get_position().distance_to(a.get_position()) <
-               this->get_position().distance_to(b.get_position());
-      });
-  return std::distance(attackers.begin(), nearest_attacker);
-}
-
 void Attacker::move(Position position) {
   auto current_position = this->_position;
   auto distance = current_position.distance_to(position);

@@ -1,4 +1,5 @@
 #include "aerial_attacker.hpp"
+#include "attacker/attacker.hpp"
 #include "defender/defender.hpp"
 #include "logger/logger.hpp"
 
@@ -28,4 +29,21 @@ Attacker *AerialAttacker::construct(AttackerType type, Position p) {
                this->get_position().distance_to(b->get_position());
       });
   return std::distance(defenders.begin(), nearest_defender);
+}
+
+[[nodiscard]] std::optional<size_t>
+AerialAttacker::get_nearest_attacker_index_for_pvp(
+    const std::vector<Attacker *> &attackers) const {
+
+  if (attackers.empty()) {
+    return std::nullopt;
+  }
+
+  auto nearest_attacker = std::min_element(
+      attackers.begin(), attackers.end(),
+      [this](const Attacker *a, const Attacker *b) {
+        return this->get_position().distance_to(a->get_position()) <
+               this->get_position().distance_to(b->get_position());
+      });
+  return std::distance(attackers.begin(), nearest_attacker);
 }

@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-PvPFDInput::PvPFDInput(int input_fd, int output_fd)
+FileDescriptorInput::FileDescriptorInput(int input_fd, int output_fd)
     : _input_fd(input_fd), _output_fd(output_fd) {
   if (_input_fd == -1 || _output_fd == -1) {
     std::cerr << "Error occurred while opening an fd";
@@ -29,10 +29,10 @@ PvPFDInput::PvPFDInput(int input_fd, int output_fd)
   }
 }
 
-PvPFDInput::~PvPFDInput() {
+FileDescriptorInput::~FileDescriptorInput() {
   this->get().close();
   this->put().close();
 }
-std::ifstream &PvPFDInput ::get() { return this->_ifs; }
+std::ifstream &FileDescriptorInput ::get() { return this->_ifs; }
 
-std::ofstream &PvPFDInput ::put() { return this->_ofs; }
+std::ofstream &FileDescriptorInput ::put() { return this->_ofs; }

@@ -11,10 +11,10 @@
 #include <vector>
 using namespace std;
 
-class PvPFDInput {
+class FileDescriptorInput {
 public:
-  PvPFDInput(int input_fd, int output_fd);
-  ~PvPFDInput();
+  FileDescriptorInput(int input_fd, int output_fd);
+  ~FileDescriptorInput();
   std::ifstream &get();
   std::ofstream &put();
   void close_stream();

@@ -25,4 +25,7 @@ public:
 
   [[nodiscard]] std::optional<size_t>
   get_nearest_defender_index(const std::vector<Defender *> &defenders) const;
+
+  [[nodiscard]] std::optional<size_t> get_nearest_attacker_index_for_pvp(
+      const std::vector<Attacker *> &attacker) const;
 };

@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <concepts>
 
 Position::Position(int x, int y)
     : _x(std::clamp(x, 0, (int)Map::no_of_cols)),
@@ -25,4 +26,26 @@ bool Position::is_valid_spawn_position(int x, int y) {
   }
   return x == 0 || y == 0 || (x == (static_cast<int>(Map::no_of_rows) - 1)) ||
          (y == (static_cast<int>(Map::no_of_cols) - 1));
+}
+
+bool Position::is_valid_pvp_spawn_position(int x, int y,
+                                           PvpPlayerType player_type) {
+
+  if (x < 0 || y < 0 || x >= static_cast<int>(Map::no_of_rows) ||
+      y >= static_cast<int>(Map::no_of_cols)) {
+    return false;
+  }
+  if (player_type == PvpPlayerType::PLAYER1) {
+    return (x == 0 && y == 0) ||
+           (x == 0 && y == (static_cast<int>(Map::no_of_cols) - 1)) ||
+           (x == (static_cast<int>(Map::no_of_rows) - 1) &&
+            y == (static_cast<int>(Map::no_of_cols) - 1));
+  }
+  if (player_type == PvpPlayerType::PLAYER2) {
+    return (x == 0 && y == 0) ||
+           (x == (static_cast<int>(Map::no_of_rows) - 1) && y == 0) ||
+           (x == (static_cast<int>(Map::no_of_rows) - 1) &&
+            y == (static_cast<int>(Map::no_of_cols) - 1));
+  }
+  return false;
 }
