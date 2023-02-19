@@ -1,2 +1,3 @@
 target_sources(cc_simulator PRIVATE position.cpp attributes.cpp game_map.cpp
-                                    argument_reader.cpp)
+                                    argument_reader.cpp
+                                    file_descriptor.cpp)

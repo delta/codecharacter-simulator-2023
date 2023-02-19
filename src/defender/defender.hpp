@@ -30,7 +30,7 @@ public:
 
   [[nodiscard]] static Defender construct(DefenderType type, Position p);
 
-  void attack(Actor &opponent) const override;
+  void attack(Actor &opponent, char opponent_type) const override;
 
   [[nodiscard]] std::optional<size_t>
   get_nearest_attacker_index(const std::vector<Attacker> &attackers) const;

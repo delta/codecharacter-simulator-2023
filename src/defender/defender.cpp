@@ -25,9 +25,10 @@ void Defender::update_state() {
   }
 }
 
-void Defender::attack(Actor &opponent) const {
+void Defender::attack(Actor &opponent, char opponent_type) const {
   opponent.take_damage(this->get_attack_power());
-  Logger::log_shoot('A', this->_id, opponent.get_id(), opponent.get_hp());
+  Logger::log_shoot(opponent_type, this->_id, opponent.get_id(),
+                    opponent.get_hp());
 }
 
 std::optional<size_t> Defender::get_nearest_attacker_index(

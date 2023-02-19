@@ -21,7 +21,7 @@ public:
 
   [[nodiscard]] bool is_in_range(const Actor &actor) const;
 
-  virtual void attack(Actor &opponent) const = 0;
+  virtual void attack(Actor &opponent, char opponent_type) const = 0;
 
   void take_damage(unsigned damage);
 

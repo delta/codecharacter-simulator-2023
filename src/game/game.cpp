@@ -68,7 +68,7 @@ Game Game::simulate(
       if ((attacker.is_in_range(defenders[*defender_index])) &&
           ((attacker.is_aerial_type()) ||
            (!defenders[*defender_index].is_aerial_type()))) {
-        attacker.attack(defenders[*defender_index]);
+        attacker.attack(defenders[*defender_index], 'D');
       } else {
         attacker.set_destination(defenders[*defender_index].get_position());
       }
@@ -82,7 +82,7 @@ Game Game::simulate(
       if ((defender.is_in_range(attackers[*attacker_index])) &&
           ((defender.is_aerial_type()) ||
            (!attackers[*attacker_index].is_aerial_type()))) {
-        defender.attack(attackers[*attacker_index]);
+        defender.attack(attackers[*attacker_index], 'A');
         // set defender's state to ATTACKING
         defender.set_state(Defender::State::ATTACKING);
       } else {

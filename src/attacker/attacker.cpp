@@ -95,6 +95,40 @@ void Attacker::update_state() {
   return std::nullopt;
 }
 
+[[nodiscard]] std::optional<size_t>
+Attacker::get_nearest_attacker_index_for_pvp(
+    const std::vector<Attacker> &attackers) const {
+  if (attackers.empty()) {
+    return std::nullopt;
+  }
+
+  if (this->is_aerial_type()) {
+    auto nearest_attacker = std::min_element(
+        attackers.begin(), attackers.end(),
+        [this](const Attacker a, const Attacker b) {
+          return this->get_position().distance_to(a.get_position()) <
+                 this->get_position().distance_to(b.get_position());
+        });
+    return std::distance(attackers.begin(), nearest_attacker);
+  } else {
+    auto nearest_attacker = std::min_element(
+        attackers.begin(), attackers.end(),
+        [this](const Attacker a, const Attacker b) {
+          if (a.is_aerial_type() && !b.is_aerial_type()) {
+            return false;
+          }
+          if (b.is_aerial_type() && !a.is_aerial_type()) {
+            return true;
+          }
+          return this->get_position().distance_to(a.get_position()) <
+                 this->get_position().distance_to(b.get_position());
+        });
+    return std::distance(attackers.begin(), nearest_attacker);
+  }
+
+  return std::nullopt;
+}
+
 void Attacker::move(Position position) {
   auto current_position = this->_position;
   auto distance = current_position.distance_to(position);
@@ -122,9 +156,10 @@ void Attacker::move(Position position) {
   Logger::log_move(this->_id, this->_position.get_x(), this->_position.get_y());
 }
 
-void Attacker::attack(Actor &opponent) const {
+void Attacker::attack(Actor &opponent, char opponent_type) const {
   opponent.take_damage(this->get_attack_power());
-  Logger::log_shoot('D', this->_id, opponent.get_id(), opponent.get_hp());
+  Logger::log_shoot(opponent_type, this->_id, opponent.get_id(),
+                    opponent.get_hp());
 }
 
 void Attacker::set_state(State s) { this->_state = s; }
