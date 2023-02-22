@@ -9,8 +9,8 @@ FileDescriptorInput::FileDescriptorInput(int input_fd, int output_fd)
   if (_input_fd == -1 || _output_fd == -1) {
     std::cerr << "Error occurred while opening an fd";
   }
-  std::string input_fd_file = "/proc/self/fd" + std::to_string(_input_fd);
-  std::string output_fd_file = "/proc/self/fd" + std::to_string(_output_fd);
+  std::string input_fd_file = "/proc/self/fd/" + std::to_string(_input_fd);
+  std::string output_fd_file = "/proc/self/fd/" + std::to_string(_output_fd);
 
   std::ifstream &istream_file = this->get();
   std::ofstream &ostream_file = this->put();
@@ -19,12 +19,12 @@ FileDescriptorInput::FileDescriptorInput(int input_fd, int output_fd)
 
   if (!istream_file) {
     std::cerr << "Failed in opening the input file with error no - " << errno
-              << endl;
+              << " " << input_fd << endl;
     istream_file.close();
   }
   if (!ostream_file) {
     std::cerr << "Failed in opening the output file with error no - " << errno
-              << endl;
+              << " " << output_fd << endl;
     ostream_file.close();
   }
 }

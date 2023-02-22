@@ -1,3 +1,5 @@
+#!/bin/bash
+
 bin_dir=$1
 if [ -z "$bin_dir" ] 
 then
@@ -13,5 +15,8 @@ cd "$bin_dir"
 if [ ! -f "conanbuildinfo.cmake" ]
 then
 	conan install ..
+  cd build
+  cmake -G Ninja ..
+  ninja
 fi
 
