@@ -15,8 +15,8 @@ cd "$bin_dir"
 if [ ! -f "conanbuildinfo.cmake" ]
 then
 	conan install ..
-  cd build
-  cmake -G Ninja ..
-  ninja
+  # cd build
+  # cmake -G Ninja ..
+  # ninja
 fi
 

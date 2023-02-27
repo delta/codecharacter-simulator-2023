@@ -129,6 +129,7 @@ void normalGame() {
 }
 
 void pvpGame(int p1_in, int p1_out, int p2_in, int p2_out, std::ofstream &fs) {
+  int count = 0, count_put = 0;
   // TODO: Implement file-descriptor to input/output stream
   // and actual gameplay to generate logs
   FileDescriptorInput player1_input(p1_in, p1_out);
@@ -191,20 +192,24 @@ void pvpGame(int p1_in, int p1_out, int p2_in, int p2_out, std::ofstream &fs) {
 
   // fs.close();
   for (size_t turn = 0; turn < turns; ++turn) {
+    fs << "player1 count " << count << "\n";
+    fs << "player1_count_put " << count_put << "\n";
     fs << "Turn: " << turn << "\n";
     fs.flush();
     Logger::log_turn(turn);
 
     unsigned n_player1_attackers;
     player1_input.get() >> n_player1_attackers;
+    count++;
     fs << "player1 attackers count: " << n_player1_attackers << "\n";
 
     auto player1_spawn_positions =
         std::vector<std::pair<Position, AttackerType>>();
     while (n_player1_attackers-- > 0) {
-      fs << Logger::get_log() << "\n";
+      // fs << Logger::get_log() << "\n";
       unsigned type_id, x, y;
       player1_input.get() >> type_id >> x >> y;
+      count += 3;
       fs << "id: " << type_id << ", x: " << x << ", y: " << y << "\n";
       fs.flush();
       player1_spawn_positions.emplace_back(
@@ -234,6 +239,7 @@ void pvpGame(int p1_in, int p1_out, int p2_in, int p2_out, std::ofstream &fs) {
         player1_set_targets;
     int no_of_player1_set_targets = 0;
     player1_input.get() >> no_of_player1_set_targets;
+    count += 1;
     fs << "Player1 set targets: " << no_of_player1_set_targets << "\n";
     fs.flush();
     while ((no_of_player1_set_targets--) > 0) {
@@ -241,6 +247,7 @@ void pvpGame(int p1_in, int p1_out, int p2_in, int p2_out, std::ofstream &fs) {
       PvPGame::player2_attacker_id player2_att_id = 0;
       player1_input.get() >> player1_att_id >> player2_att_id;
       player1_set_targets[player1_att_id] = player2_att_id;
+      count += 2;
     }
 
     std::unordered_map<PvPGame::player1_attacker_id,
@@ -257,22 +264,27 @@ void pvpGame(int p1_in, int p1_out, int p2_in, int p2_out, std::ofstream &fs) {
       player2_set_targets[player2_att_id] = player1_att_id;
     }
 
-    game = game.simulate(player1_set_targets, player2_set_targets,
-                         player1_spawn_positions,
-                         player2_spawn_positions); // pass player2_set_targets
-                                                   // also as a parameter
+    // game = game.simulate(player1_set_targets, player2_set_targets,
+    //                      player1_spawn_positions,
+    //                      player2_spawn_positions); // pass
+    //  player2_set_targets
+    // also as a parameter
 
     fs << "printing player1 active attackers\n";
     fs.flush();
 
     auto player1_active_attackers = game.get_player1_attackers();
     player1_input.put() << player1_active_attackers.size() << "\n";
+    count_put += 1;
     std::ranges::for_each(
-        player1_active_attackers, [&player1_input](const Attacker &attacker) {
+        player1_active_attackers,
+        [&player1_input, &count_put](const Attacker &attacker) {
           player1_input.put()
               << attacker.get_id() << " " << attacker.get_position().get_x()
               << " " << attacker.get_position().get_y() << " "
               << (int)attacker.get_type() << " " << attacker.get_hp() << "\n";
+          count_put += 5;
+          player1_input.put().flush();
         });
 
     player1_input.put().flush();
@@ -280,10 +292,29 @@ void pvpGame(int p1_in, int p1_out, int p2_in, int p2_out, std::ofstream &fs) {
     fs << "priting player1 active attackers done\n";
     fs.flush();
 
-    fs << "printing player2 active attackers\n";
+    fs << "printing player2 active attackers to player1 code\n";
     fs.flush();
 
     auto player2_active_attackers = game.get_player2_attackers();
+    player1_input.put() << player2_active_attackers.size() << "\n";
+    count_put += 1;
+    std::ranges::for_each(
+        player2_active_attackers,
+        [&player1_input, &count_put](const Attacker &attacker) {
+          player1_input.put()
+              << attacker.get_id() << " " << attacker.get_position().get_x()
+              << " " << attacker.get_position().get_y() << " "
+              << (int)attacker.get_type() << " " << attacker.get_hp() << "\n";
+          player1_input.put().flush();
+          count_put += 5;
+        });
+    player1_input.put().flush();
+
+    fs << "printing player2 active attackers to player 1 code done \n";
+    fs.flush();
+
+    fs << "printing player2 active attackers to player 2\n";
+    fs.flush();
     player2_input.put() << player2_active_attackers.size() << "\n";
     std::ranges::for_each(
         player2_active_attackers, [&player2_input](const Attacker &attacker) {
@@ -291,6 +322,7 @@ void pvpGame(int p1_in, int p1_out, int p2_in, int p2_out, std::ofstream &fs) {
               << attacker.get_id() << " " << attacker.get_position().get_x()
               << " " << attacker.get_position().get_y() << " "
               << (int)attacker.get_type() << " " << attacker.get_hp() << "\n";
+          player2_input.put().flush();
         });
 
     player2_input.put().flush();
@@ -298,10 +330,27 @@ void pvpGame(int p1_in, int p1_out, int p2_in, int p2_out, std::ofstream &fs) {
     fs << "priting player2 active attackers done\n";
     fs.flush();
 
+    fs << "printing player1 active attackers to player2 code\n";
+    fs.flush();
+
+    player2_input.put() << player1_active_attackers.size() << "\n";
+    std::ranges::for_each(
+        player1_active_attackers, [&player2_input](const Attacker &attacker) {
+          player2_input.put()
+              << attacker.get_id() << " " << attacker.get_position().get_x()
+              << " " << attacker.get_position().get_y() << " "
+              << (int)attacker.get_type() << " " << attacker.get_hp() << "\n";
+          player2_input.put().flush();
+        });
+
+    player2_input.put().flush();
+    fs << "printing player1 active attackers to player 2 code done \n";
+    fs.flush();
+
     player1_input.put() << game.get_player1_coins() << "\n";
     player2_input.put() << game.get_player2_coins()
                         << "\n"; // separate coins for player1 and player2
-
+    count_put += 1;
     player1_input.put().flush();
     player2_input.put().flush();
 
