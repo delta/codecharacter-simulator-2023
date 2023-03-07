@@ -138,8 +138,6 @@ Game Game::simulate(
   ranges::for_each(spawn_positions, [&](const auto &spawn_details) {
     const auto &[position, attacker_type] = spawn_details;
     const unsigned price = Attacker::attribute_dictionary[attacker_type].price;
-    const bool is_aerial =
-        Attacker::attribute_dictionary[attacker_type].is_aerial;
     if (price > coins_left) {
       return;
     }
