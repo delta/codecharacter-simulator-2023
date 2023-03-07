@@ -65,9 +65,7 @@ Game Game::simulate(
     }
 
     if (defender_index.has_value()) {
-      if ((attacker.is_in_range(defenders[*defender_index])) &&
-          ((attacker.is_aerial_type()) ||
-           (!defenders[*defender_index].is_aerial_type()))) {
+      if ((attacker.is_in_range(defenders[*defender_index]))) {
         attacker.attack(defenders[*defender_index]);
       } else {
         attacker.set_destination(defenders[*defender_index].get_position());
@@ -140,8 +138,6 @@ Game Game::simulate(
   ranges::for_each(spawn_positions, [&](const auto &spawn_details) {
     const auto &[position, attacker_type] = spawn_details;
     const unsigned price = Attacker::attribute_dictionary[attacker_type].price;
-    const bool is_aerial =
-        Attacker::attribute_dictionary[attacker_type].is_aerial;
     if (price > coins_left) {
       return;
     }

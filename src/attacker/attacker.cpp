@@ -67,32 +67,13 @@ void Attacker::update_state() {
   if (defenders.empty()) {
     return std::nullopt;
   }
-
-  if (this->is_aerial_type()) {
-    auto nearest_defender = std::min_element(
-        defenders.begin(), defenders.end(),
-        [this](const Defender a, const Defender b) {
-          return this->get_position().distance_to(a.get_position()) <
-                 this->get_position().distance_to(b.get_position());
-        });
-    return std::distance(defenders.begin(), nearest_defender);
-  } else {
-    auto nearest_defender = std::min_element(
-        defenders.begin(), defenders.end(),
-        [this](const Defender a, const Defender b) {
-          if (a.is_aerial_type() && !b.is_aerial_type()) {
-            return false;
-          }
-          if (b.is_aerial_type() && !a.is_aerial_type()) {
-            return true;
-          }
-          return this->get_position().distance_to(a.get_position()) <
-                 this->get_position().distance_to(b.get_position());
-        });
-    return std::distance(defenders.begin(), nearest_defender);
-  }
-
-  return std::nullopt;
+  auto nearest_defender = std::min_element(
+      defenders.begin(), defenders.end(),
+      [this](const Defender a, const Defender b) {
+        return this->get_position().distance_to(a.get_position()) <
+               this->get_position().distance_to(b.get_position());
+      });
+  return std::distance(defenders.begin(), nearest_defender);
 }
 
 void Attacker::move(Position position) {
