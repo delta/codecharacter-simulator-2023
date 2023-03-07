@@ -65,9 +65,7 @@ Game Game::simulate(
     }
 
     if (defender_index.has_value()) {
-      if ((attacker.is_in_range(defenders[*defender_index])) &&
-          ((attacker.is_aerial_type()) ||
-           (!defenders[*defender_index].is_aerial_type()))) {
+      if ((attacker.is_in_range(defenders[*defender_index]))) {
         attacker.attack(defenders[*defender_index]);
       } else {
         attacker.set_destination(defenders[*defender_index].get_position());
